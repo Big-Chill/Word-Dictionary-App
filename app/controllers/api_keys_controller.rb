@@ -13,7 +13,30 @@ class ApiKeysController < ApplicationController
 
   # GET /api_keys/new
   def new
-    @api_key = ApiKey.new
+    @current_user = current_user
+    current_generated_api_key=SecureRandom.alphanumeric(50)
+
+    if(@current_user.subscription_type == 1)
+      if(ApiKey.where(user_id: @current_user.id).count <5)
+        @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
+        AllKey.create(api_key:current_generated_api_key, frequency:0)
+        redirect_to api_keys_path
+      else
+        redirect_to api_keys_path, notice: "You can only create 5 api keys."
+      end
+    elsif(@current_user.subscription_type == 2)
+      if(ApiKey.where(user_id: @current_user.id).count <10)
+        @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
+        AllKey.create(api_key:current_generated_api_key, frequency:0)
+        redirect_to api_keys_path
+      else
+        redirect_to api_keys_path, notice: "You can only create 10 api keys."
+      end
+    else
+      @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
+      AllKey.create(api_key:current_generated_api_key, frequency:0)
+        redirect_to api_keys_path
+    end
   end
 
   # GET /api_keys/1/edit
@@ -21,19 +44,19 @@ class ApiKeysController < ApplicationController
   end
 
   # POST /api_keys or /api_keys.json
-  def create
-    @api_key = ApiKey.new(api_key_params)
+  # def create
+  #   @api_key = ApiKey.new(api_key_params)
 
-    respond_to do |format|
-      if @api_key.save
-        format.html { redirect_to api_key_url(@api_key), notice: "Api key was successfully created." }
-        format.json { render :show, status: :created, location: @api_key }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @api_key.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+  #   respond_to do |format|
+  #     if @api_key.save
+  #       format.html { redirect_to api_key_url(@api_key), notice: "Api key was successfully created." }
+  #       format.json { render :show, status: :created, location: @api_key }
+  #     else
+  #       format.html { render :new, status: :unprocessable_entity }
+  #       format.json { render json: @api_key.errors, status: :unprocessable_entity }
+  #     end
+  #   end
+  # end
 
   # PATCH/PUT /api_keys/1 or /api_keys/1.json
   def update
