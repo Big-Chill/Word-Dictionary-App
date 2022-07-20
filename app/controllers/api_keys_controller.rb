@@ -9,6 +9,7 @@ class ApiKeysController < ApplicationController
 
   # GET /api_keys/1 or /api_keys/1.json
   def show
+    @frequency = AllKey.find_by(api_key:@api_key.api_key).frequency
   end
 
   # GET /api_keys/new
@@ -85,7 +86,12 @@ class ApiKeysController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_api_key
-      @api_key = ApiKey.find(params[:id])
+      # @api_key = ApiKey.find(params[:id])
+      if ApiKey.exists?(params[:id])
+        @api_key = ApiKey.find(params[:id])
+      else
+        redirect_to api_keys_path, notice: "Api key does not exist."
+      end
     end
 
     # Only allow a list of trusted parameters through.

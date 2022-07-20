@@ -1,1 +1,44 @@
-<h1>This is Homepage</h1>
+<%=render 'home/navbar' %>
+
+
+
+<div class="list-table">
+
+<table class="table table-border border-dark">
+  <thead>
+    <tr>
+      <th scope="col" class="col-2">Index</th>
+      <th scope="col" class="col-5">Routes Available</th>
+      <th scope="col" class="col-5">Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>{hostname}/word?api_key={API_KEY}</td>
+      <td>localhost:3000/word?api_key=jB7EWLTESb7OGxUR0K2hUWeOHikEaFK4AJCPp5T3Fh5NFZqrox</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>{hostname}/definition?word={word_name}&&api_key={API_KEY}</td>
+      <td>localhost:3000/definition?word=heavy&&api_key=jB7EWLTESb7OGxUR0K2hUWeOHikEaFK4AJCPp5T3Fh5NFZqrox</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>{hostname}/example?word={word_name}&&api_key={API_KEY}</td>
+      <td>localhost:3000/example?word=heavy&&api_key=jB7EWLTESb7OGxUR0K2hUWeOHikEaFK4AJCPp5T3Fh5NFZqrox</td>
+    </tr>
+     <tr>
+      <th scope="row">4</th>
+      <td>{hostname}/synonym?word={word_name}&&api_key={API_KEY}</td>
+      <td>localhost:3000/synonym?word=heavy&&api_key=jB7EWLTESb7OGxUR0K2hUWeOHikEaFK4AJCPp5T3Fh5NFZqrox</td>
+    </tr>
+    <tr>
+      <th scope="row">5</th>
+      <td>{hostname}/antonym?word={word_name}&&api_key={API_KEY}</td>
+      <td>localhost:3000/antonym?word=heavy&&api_key=jB7EWLTESb7OGxUR0K2hUWeOHikEaFK4AJCPp5T3Fh5NFZqrox</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>

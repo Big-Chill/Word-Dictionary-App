@@ -1,0 +1,21 @@
+<nav class="flex align-center">
+  <p><span>Word</span>Dictionary</p>
+  <% if user_signed_in? %>
+  <ul>
+  <li>
+  <%= link_to 'Home', root_path %>
+    <%= button_to 'Logout', destroy_user_session_path, method: :delete, class:"btn btn-danger" %>
+    <%= link_to 'Show my API Keys', api_keys_path %>
+    <%= link_to "Create a new API Key", new_api_key_path %>
+
+    </li>
+</ul>
+  <%else%>
+    <ul>
+        <li>
+            <%= link_to 'Home', root_path %>
+            <%= link_to 'Login', new_user_session_path %>
+            <%= link_to 'Sign up', new_user_registration_path %>
+        </li>
+  <%end%>
+</nav>

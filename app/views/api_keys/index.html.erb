@@ -1,14 +1,28 @@
+<%=render 'home/navbar' %>
 <p style="color: green"><%= notice %></p>
-
-<h1>Api keys</h1>
-
-<div id="api_keys">
-  <% @api_keys.each do |api_key| %>
-    <%= render api_key %>
-    <p>
-      <%= link_to "Show this api key", api_key %>
-    </p>
-  <% end %>
+<br/>
+<div class="home-heading">
+<h1>API Keys</h1>
 </div>
-
-<%= link_to "New api key", new_api_key_path %>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col" class="col-2">ID</th>
+      <th scope="col" class="col-7">API Key</th>
+      <th scope="col" class="col-3"></th>
+    </tr>
+  </thead>
+  <tbody>
+  <%k=1%>
+    <% @api_keys.each do |a| %>
+    <% if a.user_id==current_user.id%>
+      <tr>
+        <td><%= k%></td>
+        <td><%= a.api_key %></td>
+        <td><%= link_to "Show this api key", api_key_path(a) %></td>
+      </tr>
+      <%k+=1%>
+    <% end %>
+    <% end %>
+  </tbody>
+</table>
