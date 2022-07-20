@@ -1,5 +1,6 @@
 class ApiKeysController < ApplicationController
   before_action :set_api_key, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!, only: [:index, :show, :new, :edit, :create, :update, :destroy]
 
   # GET /api_keys or /api_keys.json
   def index
