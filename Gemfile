@@ -27,6 +27,8 @@ gem 'devise'
 
 gem 'bootstrap'
 
+gem 'securerandom'
+
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
 
