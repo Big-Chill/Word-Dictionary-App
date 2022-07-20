@@ -10,11 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_20_062058) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_20_064658) do
   create_table "all_words", force: :cascade do |t|
     t.string "word_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "antonyms", force: :cascade do |t|
+    t.string "text"
+    t.integer "all_word_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["all_word_id"], name: "index_antonyms_on_all_word_id"
   end
 
   create_table "definitions", force: :cascade do |t|
@@ -33,6 +41,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_20_062058) do
     t.index ["all_word_id"], name: "index_examples_on_all_word_id"
   end
 
+  create_table "synonyms", force: :cascade do |t|
+    t.string "text"
+    t.integer "all_word_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["all_word_id"], name: "index_synonyms_on_all_word_id"
+  end
+
+  add_foreign_key "antonyms", "all_words"
   add_foreign_key "definitions", "all_words"
   add_foreign_key "examples", "all_words"
+  add_foreign_key "synonyms", "all_words"
 end
