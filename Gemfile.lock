@@ -198,6 +198,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    securerandom (0.2.0)
     selenium-webdriver (4.3.0)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -258,6 +259,7 @@ DEPENDENCIES
   json
   puma (~> 5.0)
   rails (~> 7.0.3, >= 7.0.3.1)
+  securerandom
   selenium-webdriver
   sprockets-rails
   sqlite3 (~> 1.4)
