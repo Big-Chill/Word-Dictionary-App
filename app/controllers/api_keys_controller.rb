@@ -74,6 +74,7 @@ class ApiKeysController < ApplicationController
   # DELETE /api_keys/1 or /api_keys/1.json
   def destroy
     @api_key.destroy
+    AllKey.find_by(api_key:@api_key.api_key).destroy
 
     respond_to do |format|
       format.html { redirect_to api_keys_url, notice: "Api key was successfully destroyed." }
