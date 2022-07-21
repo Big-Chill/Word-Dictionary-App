@@ -1,10 +1,10 @@
 class UserWordController < ApplicationController
-    before_action :authenticate_user!, only: [:getAWord, :getADefinition, :getSynonym, :getAntonym, :geAtExample]
+    before_action :authenticate_user!, only: [:getAWord, :getADefinition, :getSynonym, :getAntonym, :getAExample]
     before_action :get_current_user, only: [:getAWord, :getADefinition, :getSynonym, :getAWord, :getAExample, :getAntonym]
     before_action :get_params, only: [:getSynonym, :getAWord, :getADefinition, :getSynonym, :getAExample, :getAntonym]
     before_action :is_valid_word?, only: [:getADefinition, :getSynonym, :getAExample, :getAntonym]
     before_action :is_valid_api_key?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
-    
+    before_action :check_daily_limit?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
     
 
 
@@ -84,43 +84,59 @@ class UserWordController < ApplicationController
         api_key=@user_params[:api_key]
         if AllKey.find_by(api_key: api_key)==nil
             render json: {error: 'Invalid API key'}, status: 401
-        else
-            if @current_user.subscription_type==1
-                curr_obj=AllKey.find_by(api_key: api_key)
-                if curr_obj.frequency+1>500
-                    flash[:notice]="You have exhausted the daily limit of 500 API calls"
-                    ApiKey.find_by(api_key: api_key).destroy
-                    AllKey.find_by(api_key: api_key).destroy
-                    redirect_to root_path
-                else
-                    curr_obj.frequency+=1
-                    curr_obj.save
-                end
-            elsif @current_user.subscription_type==2
-                curr_obj=AllKey.find_by(api_key: api_key)
-                if curr_obj.frequency+1>2000
-                    flash[:notice]="You have exhausted the monthly limit of 2000 API calls"
-                    ApiKey.find_by(api_key: api_key).destroy
-                    AllKey.find_by(api_key: api_key).destroy
-                    redirect_to root_path
-                else
-                    curr_obj.frequency+=1
-                    curr_obj.save
-                end
-            else
-                curr_obj=AllKey.find_by(api_key: api_key)
-                if curr_obj.frequency+1>10000
-                    flash[:notice]="You have exhausted the yearly limit of 10000 API calls"
-                    ApiKey.find_by(api_key: api_key).destroy
-                    AllKey.find_by(api_key: api_key).destroy
-                    redirect_to root_path
-                else
-                    curr_obj.frequency+=1
-                    curr_obj.save
-                end
-            end
+        end
     end
-end
+
+    def check_daily_limit?
+        api_key=@user_params[:api_key]
+        if @current_user.subscription_type==1
+            curr_obj=AllKey.find_by(api_key: api_key)
+            created_time=curr_obj.created_time
+            one_day_from_created_time=created_time+1.day
+            if created_time < one_day_from_created_time && curr_obj.frequency+1>500
+                flash[:error]="You have reached your daily limit"
+                redirect_to root_path
+            elsif created_time >= one_day_from_created_time
+                curr_obj.frequency=0
+                curr_obj.created_time=one_day_from_created_time
+                curr_obj.save
+            elsif created_time < one_day_from_created_time && curr_obj.frequency+1<=500
+                curr_obj.frequency+=1
+                curr_obj.save
+            end
+
+        elsif @current_user.subscription_type==2
+            curr_obj=AllKey.find_by(api_key: api_key)
+            created_time=curr_obj.created_time
+            one_day_from_created_time=created_time+1.day
+            if created_time < one_day_from_created_time && curr_obj.frequency+1>2000
+                flash[:error]="You have reached your daily limit"
+                redirect_to root_path
+            elsif created_time >= one_day_from_created_time
+                curr_obj.frequency=0
+                curr_obj.created_time=one_day_from_created_time
+                curr_obj.save
+            elsif created_time < one_day_from_created_time && curr_obj.frequency+1<=2000
+                curr_obj.frequency+=1
+                curr_obj.save
+            end
+        elsif @current_user.subscription_type==3
+            curr_obj=AllKey.find_by(api_key: api_key)
+            created_time=curr_obj.created_time
+            one_day_from_created_time=created_time+1.day
+            if created_time < one_day_from_created_time && curr_obj.frequency+1>10000
+                flash[:error]="You have reached your daily limit"
+                redirect_to root_path
+            elsif created_time >= one_day_from_created_time
+                curr_obj.frequency=0
+                curr_obj.created_time=one_day_from_created_time
+                curr_obj.save
+            elsif created_time < one_day_from_created_time && curr_obj.frequency+1<=10000
+                curr_obj.frequency+=1
+                curr_obj.save
+            end
+        end
+    end
 end
 
 

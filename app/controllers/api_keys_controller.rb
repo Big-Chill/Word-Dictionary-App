@@ -20,7 +20,7 @@ class ApiKeysController < ApplicationController
     if(@current_user.subscription_type == 1)
       if(ApiKey.where(user_id: @current_user.id).count <5)
         @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
-        AllKey.create(api_key:current_generated_api_key, frequency:0)
+        AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now)
         redirect_to api_keys_path
       else
         redirect_to api_keys_path, notice: "You can only create 5 api keys."
@@ -28,14 +28,14 @@ class ApiKeysController < ApplicationController
     elsif(@current_user.subscription_type == 2)
       if(ApiKey.where(user_id: @current_user.id).count <10)
         @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
-        AllKey.create(api_key:current_generated_api_key, frequency:0)
+        AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now)
         redirect_to api_keys_path
       else
         redirect_to api_keys_path, notice: "You can only create 10 api keys."
       end
     else
       @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
-      AllKey.create(api_key:current_generated_api_key, frequency:0)
+      AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now)
         redirect_to api_keys_path
     end
   end
