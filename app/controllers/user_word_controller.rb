@@ -2,8 +2,9 @@ class UserWordController < ApplicationController
     before_action :authenticate_user!, only: [:getAWord, :getADefinition, :getSynonym, :getAntonym, :geAtExample]
     before_action :get_current_user, only: [:getAWord, :getADefinition, :getSynonym, :getAWord, :getAExample, :getAntonym]
     before_action :get_params, only: [:getSynonym, :getAWord, :getADefinition, :getSynonym, :getAExample, :getAntonym]
-    before_action :is_valid_api_key?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
     before_action :is_valid_word?, only: [:getADefinition, :getSynonym, :getAExample, :getAntonym]
+    before_action :is_valid_api_key?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
+    
     
 
 
