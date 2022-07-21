@@ -86,8 +86,8 @@ class UserWordController < ApplicationController
         else
             if @current_user.subscription_type==1
                 curr_obj=AllKey.find_by(api_key: api_key)
-                if curr_obj.frequency+1>10
-                    flash[:notice]="You have used all your 10 words. Please contact admin for more."
+                if curr_obj.frequency+1>500
+                    flash[:notice]="You have exhausted the daily limit of 500 API calls"
                     ApiKey.find_by(api_key: api_key).destroy
                     AllKey.find_by(api_key: api_key).destroy
                     redirect_to root_path
@@ -97,8 +97,8 @@ class UserWordController < ApplicationController
                 end
             elsif @current_user.subscription_type==2
                 curr_obj=AllKey.find_by(api_key: api_key)
-                if curr_obj.frequency+1>20
-                    flash[:notice]="You have used all your 20 words. Please contact admin for more."
+                if curr_obj.frequency+1>2000
+                    flash[:notice]="You have exhausted the monthly limit of 2000 API calls"
                     ApiKey.find_by(api_key: api_key).destroy
                     AllKey.find_by(api_key: api_key).destroy
                     redirect_to root_path
@@ -108,8 +108,8 @@ class UserWordController < ApplicationController
                 end
             else
                 curr_obj=AllKey.find_by(api_key: api_key)
-                if curr_obj.frequency+1>30
-                    flash[:notice]="You have used all your 30 words. Please contact admin for more."
+                if curr_obj.frequency+1>10000
+                    flash[:notice]="You have exhausted the yearly limit of 10000 API calls"
                     ApiKey.find_by(api_key: api_key).destroy
                     AllKey.find_by(api_key: api_key).destroy
                     redirect_to root_path
