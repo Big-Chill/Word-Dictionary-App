@@ -1,7 +1,7 @@
 <%=render 'home/navbar' %>
 <p style="color: green"><%= notice %></p>
 
-<table class="table">
+<table class="table table-border border-dark">
   <thead>
     <tr>
       <th scope="col">API Key</th>
@@ -16,4 +16,41 @@
       <td><%= button_to "Destroy this api key", @api_key, method: :delete,class:"btn btn-danger" %></td>
     </tr>
   </tbody>
+</table>
+<br>
+<br>
+<h4>Possible Links for this API :- </h4>
+<table class="table table-border border-dark">
+<thead>
+  <tr>
+    <th scope="col">Link</th>
+    <th scope="col">Description</th>
+  </tr>
+  <tbody>
+  <tr>
+    <th><%= request.host_with_port%>/word?api_key=<%= @api_key.api_key%></th>
+    <th>Get a random word</th>
+  </tr>
+
+  <tr>
+    <th><%= request.host_with_port%>/definition?word={word_name}&&api_key=<%= @api_key.api_key%></th>
+    <th>Get the list of all definitions of the word</th>
+  </tr>
+
+  <tr>
+    <th><%= request.host_with_port%>/example?word={word_name}&&api_key=<%= @api_key.api_key%></th>
+    <th>Get the list of all examples of the word</th>
+  </tr>
+
+  <tr>
+    <th><%= request.host_with_port%>/synonym?word={word_name}&&api_key=<%= @api_key.api_key%></th>
+    <th>Get the list of all synonyms of the word</th>
+  </tr>
+
+  <tr>
+    <th><%= request.host_with_port%>/antonym?word={word_name}&&api_key=<%= @api_key.api_key%></th>
+    <th>Get the list of all antonyms of the word</th>
+  </tr>
+  </tbody>
+</thead>
 </table>
