@@ -1,18 +1,20 @@
 class UserWordController < ApplicationController
-    before_action :get_params, only: [:getSynonym, :getAWord, :getADefinition, :getSynonym, :getAExample, :getAntonym]
+    before_action :authenticate_user!, only: [:getAWord, :getADefinition, :getSynonym, :getAntonym, :geAtExample]
     before_action :get_current_user, only: [:getAWord, :getADefinition, :getSynonym, :getAWord, :getAExample, :getAntonym]
+    before_action :get_params, only: [:getSynonym, :getAWord, :getADefinition, :getSynonym, :getAExample, :getAntonym]
     before_action :is_valid_api_key?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
     before_action :is_valid_word?, only: [:getADefinition, :getSynonym, :getAExample, :getAntonym]
-    before_action :authenticate_user!, only: [:getAWord, :getADefinition, :getSynonym, :getAntonym, :geAtExample]
+    
 
-    def hello
-        render html: "Hello, world!"
-    end
 
     def getAWord
         all_ids=AllWord.ids.shuffle!.first
         @word=AllWord.find_by(id: all_ids).word_name
         render json: @word
+    end
+
+    def getError
+        not_found
     end
     
     def getADefinition

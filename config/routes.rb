@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get '/example', to: 'user_word#getAExample'
   get '/synonym', to: 'user_word#getSynonym'
   get '/antonym', to: 'user_word#getAntonym'
+  match '*unmatched', to: 'application#route_not_found', via: :all
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
