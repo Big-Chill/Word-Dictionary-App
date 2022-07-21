@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_21_061751) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_21_125033) do
   create_table "all_keys", force: :cascade do |t|
     t.string "api_key"
     t.integer "frequency"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "created_time"
+    t.integer "subscription_type"
   end
 
   create_table "all_words", force: :cascade do |t|

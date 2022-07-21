@@ -18,25 +18,28 @@ class ApiKeysController < ApplicationController
     current_generated_api_key=SecureRandom.alphanumeric(50)
 
     if(@current_user.subscription_type == 1)
-      if(ApiKey.where(user_id: @current_user.id).count <5)
-        @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
-        AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now)
+      if(@current_user.api_keys.count <5)
+        @api_key=@current_user.api_keys.create(api_key:current_generated_api_key)
+        # @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
+        AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now,subscription_type: current_user.subscription_type)
         redirect_to api_keys_path
       else
         redirect_to api_keys_path, notice: "You can only create 5 api keys."
       end
     elsif(@current_user.subscription_type == 2)
-      if(ApiKey.where(user_id: @current_user.id).count <10)
-        @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
-        AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now)
+      if(@current_user.api_keys.count <10)
+        @api_key=@current_user.api_keys.create(api_key:current_generated_api_key)
+        # @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
+        AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now,subscription_type: current_user.subscription_type)
         redirect_to api_keys_path
       else
         redirect_to api_keys_path, notice: "You can only create 10 api keys."
       end
     else
-      @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
-      AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now)
-        redirect_to api_keys_path
+      @api_key=@current_user.api_keys.create(api_key:current_generated_api_key)
+      # @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
+      AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now,subscription_type: current_user.subscription_type)
+      redirect_to api_keys_path
     end
   end
 
