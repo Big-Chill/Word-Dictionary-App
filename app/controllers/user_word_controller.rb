@@ -100,48 +100,44 @@ class UserWordController < ApplicationController
         api_key=@user_params[:api_key]
         if @current_user.subscription_type==1
             curr_obj=AllKey.find_by(api_key: api_key)
-            created_time=curr_obj.created_time
+            created_time=curr_obj.created_at
             one_day_from_created_time=created_time+1.day
-            if created_time < one_day_from_created_time && curr_obj.frequency+1>500
-                flash[:error]="You have reached your daily limit"
-                redirect_to root_path
-            elsif created_time >= one_day_from_created_time
-                curr_obj.frequency=0
-                curr_obj.created_time=one_day_from_created_time
+            if Time.now-1.day>created_time
+                curr_obj.frequency=1
+                curr_obj.created_at=Time.now
                 curr_obj.save
-            elsif created_time < one_day_from_created_time && curr_obj.frequency+1<=500
-                curr_obj.frequency+=1
+            elsif Time.now < one_day_from_created_time && curr_obj.frequency+1>500
+                render json: {error: 'Daily limit reached'}, status: 401
+            elsif Time.now < one_day_from_created_time && curr_obj.frequency+1<=500
+                curr_obj.frequency=curr_obj.frequency+1
                 curr_obj.save
             end
-
         elsif @current_user.subscription_type==2
             curr_obj=AllKey.find_by(api_key: api_key)
-            created_time=curr_obj.created_time
+            created_time=curr_obj.created_at
             one_day_from_created_time=created_time+1.day
-            if created_time < one_day_from_created_time && curr_obj.frequency+1>2000
-                flash[:error]="You have reached your daily limit"
-                redirect_to root_path
-            elsif created_time >= one_day_from_created_time
-                curr_obj.frequency=0
-                curr_obj.created_time=one_day_from_created_time
+            if Time.now-1.day>created_time
+                curr_obj.frequency=1
+                curr_obj.created_at=Time.now
                 curr_obj.save
-            elsif created_time < one_day_from_created_time && curr_obj.frequency+1<=2000
-                curr_obj.frequency+=1
+            elsif Time.now < one_day_from_created_time && curr_obj.frequency+1>2000
+                render json: {error: 'Daily limit reached'}, status: 401
+            elsif Time.now < one_day_from_created_time && curr_obj.frequency+1<=2000
+                curr_obj.frequency=curr_obj.frequency+1
                 curr_obj.save
             end
         elsif @current_user.subscription_type==3
             curr_obj=AllKey.find_by(api_key: api_key)
-            created_time=curr_obj.created_time
+            created_time=curr_obj.created_at
             one_day_from_created_time=created_time+1.day
-            if created_time < one_day_from_created_time && curr_obj.frequency+1>10000
-                flash[:error]="You have reached your daily limit"
-                redirect_to root_path
-            elsif created_time >= one_day_from_created_time
-                curr_obj.frequency=0
-                curr_obj.created_time=one_day_from_created_time
+            if Time.now-1.day>created_time
+                curr_obj.frequency=1
+                curr_obj.created_at=Time.now
                 curr_obj.save
-            elsif created_time < one_day_from_created_time && curr_obj.frequency+1<=10000
-                curr_obj.frequency+=1
+            elsif Time.now < one_day_from_created_time && curr_obj.frequency+1>10000
+                render json: {error: 'Daily limit reached'}, status: 401
+            elsif Time.now < one_day_from_created_time && curr_obj.frequency+1<=10000
+                curr_obj.frequency=curr_obj.frequency+1
                 curr_obj.save
             end
         end
