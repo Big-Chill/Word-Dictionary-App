@@ -4,6 +4,7 @@ class UserWordController < ApplicationController
     before_action :get_params, only: [:getSynonym, :getAWord, :getADefinition, :getSynonym, :getAExample, :getAntonym]
     before_action :is_valid_word?, only: [:getADefinition, :getSynonym, :getAExample, :getAntonym]
     before_action :is_valid_api_key?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
+    before_action :is_key_for_user?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
     before_action :check_daily_limit?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
     
 
@@ -83,6 +84,14 @@ class UserWordController < ApplicationController
     def is_valid_api_key?
         api_key=@user_params[:api_key]
         if AllKey.find_by(api_key: api_key)==nil
+            render json: {error: 'Invalid API key'}, status: 401
+        end
+    end
+
+    def is_key_for_user?
+        api_key=@user_params[:api_key]
+        user_id=@current_user.id
+        if ApiKey.find_by(api_key: api_key, user_id: user_id)==nil
             render json: {error: 'Invalid API key'}, status: 401
         end
     end
