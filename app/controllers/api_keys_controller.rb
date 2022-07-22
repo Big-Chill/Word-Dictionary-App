@@ -12,35 +12,14 @@ class ApiKeysController < ApplicationController
     @frequency = AllKey.find_by(api_key:@api_key.api_key).frequency
   end
 
-  # GET /api_keys/new
-  def new
-    @current_user = current_user
-    current_generated_api_key=SecureRandom.alphanumeric(50)
-
-    if(@current_user.subscription_type == 1)
-      if(@current_user.api_keys.count <5)
-        @api_key=@current_user.api_keys.create(api_key:current_generated_api_key)
-        # @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
-        AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now,subscription_type: current_user.subscription_type)
-        redirect_to api_keys_path
-      else
-        redirect_to api_keys_path, notice: "You can only create 5 api keys."
-      end
-    elsif(@current_user.subscription_type == 2)
-      if(@current_user.api_keys.count <10)
-        @api_key=@current_user.api_keys.create(api_key:current_generated_api_key)
-        # @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
-        AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now,subscription_type: current_user.subscription_type)
-        redirect_to api_keys_path
-      else
-        redirect_to api_keys_path, notice: "You can only create 10 api keys."
-      end
-    else
-      @api_key=@current_user.api_keys.create(api_key:current_generated_api_key)
-      # @api_key = ApiKey.create(api_key:current_generated_api_key, user_id: @current_user.id)
-      AllKey.create(api_key:current_generated_api_key, frequency:0,created_time:Time.now,subscription_type: current_user.subscription_type)
-      redirect_to api_keys_path
+  def create
+    if current_user.keys_limit_reached?
+      return redirect_to api_keys_path, notice: "You can only create #{current_user.keys_limit} api keys."
     end
+
+    current_user.api_keys.create
+    
+    redirect_to api_keys_path
   end
 
   # GET /api_keys/1/edit

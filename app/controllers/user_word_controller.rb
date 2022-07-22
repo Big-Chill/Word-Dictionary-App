@@ -1,33 +1,17 @@
 class UserWordController < ApplicationController
-    # before_action :authenticate_user!, only: [:getAWord, :getADefinition, :getSynonym, :getAntonym, :getAExample]
-    # before_action :get_current_user, only: [:getAWord, :getADefinition, :getSynonym, :getAWord, :getAExample, :getAntonym]
-    
-  before_action :get_params, only: [:getSynonym, :getAWord, :getADefinition, :getSynonym, :getAExample, :getAntonym]
-  before_action :get_api_key, only: [:getAWord, :getADefinition, :getSynonym, :getAExample, :getAntonym]
-  before_action :is_valid_word?, only: [:getADefinition, :getSynonym, :getAExample, :getAntonym]
-  before_action :is_valid_api_key?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
-    # before_action :is_key_for_user?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
-  before_action :check_daily_limit?, only: [:getAWord, :getADefinition, :getSynonym,:getAntonym,:getAExample]
-    
-
+  before_action :validate_api_key
+  before_action :check_daily_limit
+  before_action :load_word, except: [:getAWord]
 
   def getAWord
     all_ids = AllWord.ids.shuffle!.first
-    @word = AllWord.find_by(id: all_ids).word_name
-    render json: @word
+    word = AllWord.find_by(id: all_ids).word_name
+    render json: word
   end
-
-  
-    
+ 
   def getADefinition
-    current_word = @user_params[:word]
-    word_id = AllWord.find_by(word_name: current_word).id
-    @definition = Definition.where(all_word_id: word_id)
-    definition_arr = []
-    @definition.each do |definition|
-      definition_arr.push(definition["text"])
-    end
-    render json: {"word": current_word, "definitions": definition_arr}
+    definitions = @word.definitions.map { |definition| definition['text'] }
+    render json: { word: @word.word_name, definitions: definitions }
   end
 
   def getAExample
@@ -64,86 +48,27 @@ class UserWordController < ApplicationController
   end
 
   private
-  def get_params
-    @user_params = params
-  end
 
-  def get_current_user
-    @current_user = current_user
-  end
-
-  def is_valid_word?
-    current_word = @user_params[:word]
-    if AllWord.find_by(word_name: current_word) == nil
+  def load_word
+    @word = AllWord.find_by(word_name: params[:word])
+    if @word.nil?
       render json: {error: 'Invalid word'}, status: 401
     end
   end
 
-  def is_valid_api_key?
-    if AllKey.find_by(api_key: @api_key) == nil
+  def validate_api_key
+    @api_key = AllKey.find_by(api_key: params[:api_key])
+
+    if @api_key.nil?
       render json: {error: 'Invalid API key'}, status: 401
     end
   end
 
-  def is_key_for_user?
-    user_id = @current_user.id
-    if ApiKey.find_by(api_key: @api_key, user_id: user_id) == nil
-      render json: {error: 'Invalid API key'}, status: 401
+  def check_daily_limit
+    if @api_key.daily_limit_reached?
+      return render json: { error: 'Daily limit reached' }, status: 401
     end
-  end
 
-  def get_api_key
-    @api_key=@user_params[:api_key]
-  end
-
-  def check_daily_limit?
-    subscription_type = AllKey.find_by(api_key: @api_key).subscription_type
-       
-    if subscription_type==1
-      curr_obj = AllKey.find_by(api_key: @api_key)
-      created_time = curr_obj.created_at
-      one_day_from_created_time = created_time+1.day
-      if Time.now-1.day>created_time
-        curr_obj.frequency = 1
-        curr_obj.created_at = Time.now
-        curr_obj.save
-      elsif Time.now < one_day_from_created_time && curr_obj.frequency+1>500
-        render json: {error: 'Daily limit reached'}, status: 401
-        elsif Time.now < one_day_from_created_time && curr_obj.frequency+1 <= 500
-          curr_obj.frequency = curr_obj.frequency+1
-          curr_obj.save
-        end
-      elsif subscription_type == 2
-        curr_obj = AllKey.find_by(api_key: @api_key)
-        created_time = curr_obj.created_at
-        one_day_from_created_time = created_time+1.day
-        if Time.now-1.day>created_time
-          curr_obj.frequency = 1
-          curr_obj.created_at = Time.now
-          curr_obj.save
-        elsif Time.now < one_day_from_created_time && curr_obj.frequency+1>2000
-          render json: {error: 'Daily limit reached'}, status: 401
-        elsif Time.now < one_day_from_created_time && curr_obj.frequency+1 <= 2000
-          curr_obj.frequency = curr_obj.frequency+1
-          curr_obj.save
-        end
-        elsif subscription_type == 3
-          curr_obj = AllKey.find_by(api_key: @api_key)
-          created_time = curr_obj.created_at
-          one_day_from_created_time = created_time+1.day
-          if Time.now-1.day>created_time
-            curr_obj.frequency = 1
-            curr_obj.created_at = Time.now
-            curr_obj.save
-          elsif Time.now < one_day_from_created_time && curr_obj.frequency+1>10000
-            render json: {error: 'Daily limit reached'}, status: 401
-            elsif Time.now < one_day_from_created_time && curr_obj.frequency+1 <= 10000
-              curr_obj.frequency = curr_obj.frequency+1
-              curr_obj.save
-            end
-        end
-    end
+    @api_key.increment_usage!
+  end   
 end
-
-
-
