@@ -14,7 +14,7 @@ gem "sqlite3", "~> 1.4",group: :development
 
  gem 'rails_12factor', group: :production
 
-  gem 'pg', '0.18.1', group: :production
+  # gem 'pg', '0.18.1', group: :production
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
