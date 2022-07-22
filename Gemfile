@@ -17,7 +17,7 @@ gem "sqlite3", "~> 1.4",group: :development
   # gem 'pg', '0.18.1', group: :production
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.0"
+# gem "puma", "~> 5.0"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
@@ -32,6 +32,8 @@ gem 'devise'
 gem 'bootstrap'
 
 gem 'securerandom'
+
+gem 'passenger'
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
